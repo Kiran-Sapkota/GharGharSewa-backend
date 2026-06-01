@@ -23,7 +23,7 @@ const getTransporter = () => {
 
   transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || "smtp.gmail.com",
-    port: Number(process.env.SMTP_PORT) || 587,
+    port: 587, // Hardcoded to 587 to bypass Vercel typo
     secure: process.env.SMTP_SECURE === "true",
     auth: { user, pass },
   });
