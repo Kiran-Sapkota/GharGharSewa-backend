@@ -18,24 +18,37 @@ const serviceCategoryRoutes = require("./routes/serviceCategoryRoutes");
 
 const MONGO_URI = process.env.MONGO_URI;
 
-if (MONGO_URI) {
-  mongoose
-    .connect(MONGO_URI, {
+let isConnected = 0;
+
+const connectDB = async () => {
+  if (isConnected || mongoose.connection.readyState === 1) {
+    return;
+  }
+  if (!MONGO_URI) {
+    console.error("MONGO_URI is missing in environment variables");
+    return;
+  }
+  try {
+    await mongoose.connect(MONGO_URI, {
       tls: true,
       tlsAllowInvalidCertificates: true,
       tlsAllowInvalidHostnames: true,
-    })
-    .then(() => {
-      console.log("MongoDB Connected inside app.js");
-    })
-    .catch((err) => {
-      console.error("DB Connection Error inside app.js:", err.message);
+      serverSelectionTimeoutMS: 5000, // Fail fast if MongoDB is blocked
     });
-} else {
-  console.error("MONGO_URI is missing in environment variables");
-}
+    isConnected = 1;
+    console.log("MongoDB Connected successfully");
+  } catch (err) {
+    console.error("DB Connection Error:", err.message);
+  }
+};
 
 const app = express();
+
+// Wait for database to connect before handling requests (Fixes Vercel freezing)
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
 
 const allowedOrigins = [
   "http://localhost:5173",
