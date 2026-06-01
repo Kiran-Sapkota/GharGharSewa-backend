@@ -1,5 +1,8 @@
 const express = require("express");
 const cors = require("cors");
+const fs = require("fs");
+const path = require("path");
+const mongoose = require("mongoose");
 
 const authRoutes = require("./routes/authRoutes");
 const providerRoutes = require("./routes/providerRoutes");
@@ -36,7 +39,19 @@ app.use(
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("GharGhar Sewa Backend is running");
+  const envPath = path.join(__dirname, "..", ".env");
+  const isEnvPresent = fs.existsSync(envPath);
+  const dbState = mongoose.connection.readyState;
+  let dbStatus = "Disconnected";
+  if (dbState === 1) dbStatus = "Connected";
+  else if (dbState === 2) dbStatus = "Connecting";
+  else if (dbState === 3) dbStatus = "Disconnecting";
+
+  res.json({
+    message: "GharGhar Sewa Backend is running",
+    envFilePresent: isEnvPresent,
+    databaseStatus: dbStatus,
+  });
 });
 
 app.get("/.well-known/appspecific/com.chrome.devtools.json", (req, res) => {
