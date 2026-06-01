@@ -11,7 +11,7 @@ const sendMessageToBot = async (req, res) => {
       });
     }
 
-    const rasaResponse = await axios.post(process.env.RASA_URL, {
+    const rasaResponse = await axios.post("https://kiransapcr7-gharsewa-bot.hf.space/webhooks/rest/webhook", {
       sender: req.user ? req.user._id.toString() : "guest_user",
       message,
     });
