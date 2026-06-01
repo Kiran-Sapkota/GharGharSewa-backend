@@ -42,13 +42,14 @@ app.get("/", (req, res) => {
   const envPath = path.join(__dirname, "..", ".env");
   const isEnvPresent = fs.existsSync(envPath);
   const dbState = mongoose.connection.readyState;
+  console.log(dbState)
   let dbStatus = "Disconnected";
   if (dbState === 1) dbStatus = "Connected";
   else if (dbState === 2) dbStatus = "Connecting";
   else if (dbState === 3) dbStatus = "Disconnecting";
 
   res.json({
-    message: "GharGhar Sewa Backend is running",
+    message: "GharGhar Sewa Backend is bro and its running good i guess",
     envFilePresent: isEnvPresent,
     databaseStatus: dbStatus,
   });

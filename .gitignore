@@ -26,8 +26,6 @@ dist-ssr
 # Node
 node_modules
 
-# Environment files
-.env
 
 # Python virtual environment
 venv
